@@ -248,12 +248,16 @@ def reconstruct_tomo(path, name, dfix, init, volt=300, rotate_X=True):
             result = subprocess.run(cmd, stdout=log, stderr=log)
             result.check_returncode()
 
-            cmd = ['mtffilter',
-                   '-dfixed', str(dfix),
-                   '-initial', str(init),
-                   '-volt', str(volt),
-                   name + '_ctfcorr.ali',
-                   name + '.ali']
+            # dose weight options should be all set or unset
+            assert (dfix is None) == (init is None)
+
+            cmd = ['mtffilter']
+            if dfix is not None:
+                cmd.extend(['-dfixed', str(dfix),
+                            '-initial', str(init),
+                            '-volt', str(volt),
+                            ])
+            cmd.extend([name + '_ctfcorr.ali', name + '.ali'])
             print(" ".join(cmd))
             result = subprocess.run(cmd, stdout=log, stderr=log)
             result.check_returncode()
