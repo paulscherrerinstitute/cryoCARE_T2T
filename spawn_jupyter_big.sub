@@ -1,0 +1,39 @@
+#!/bin/sh
+#SBATCH -J jupyter
+#SBATCH -p gpu
+#SBATCH --account=merlin-gpu
+#SBATCH --time=2-00:00:00
+#SBATCH --gres=gpu:4
+#SBATCH --exclusive
+#SBATCH --mem=0
+#SBATCH -o jupyter-%j.out
+#SBATCH -e jupyter-%j.err
+
+module purge
+module use unstable
+module load anaconda/2019.07
+
+conda activate cryocare
+
+# find a port
+freeport () {
+    PORT="${1:-8888}"
+    END="${2:-$(($PORT + 10))}"
+
+    # returns 0 if the port is bound
+    while nc -z 127.0.0.1 ${PORT} >/dev/null 2>&1; do
+        ((PORT += 1))
+        if (( $PORT > $END )); then
+            return 1  # no ports found in range
+        fi
+    done
+    echo $PORT
+}
+PORT=$(freeport)
+: ${PORT:?No free ports available on $(hostname):8888 to 8898}
+
+echo "Launching jupyter on $(hostname):$PORT"
+echo "Connect using 'ssh -L$PORT:localhost:$PORT $(hostname)'"
+echo "and then open http://localhost:$PORT in your browser"
+
+srun jupyter notebook --no-browser --port=$PORT 2>&1
