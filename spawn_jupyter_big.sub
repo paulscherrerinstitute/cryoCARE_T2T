@@ -18,7 +18,7 @@ conda activate cryocare
 # find a port
 freeport () {
     PORT="${1:-8888}"
-    END="${2:-$(($PORT + 10))}"
+    END="${2:-$(($PORT + 50))}"
 
     # returns 0 if the port is bound
     while nc -z 127.0.0.1 ${PORT} >/dev/null 2>&1; do
@@ -30,7 +30,7 @@ freeport () {
     echo $PORT
 }
 PORT=$(freeport)
-: ${PORT:?No free ports available on $(hostname):8888 to 8898}
+: ${PORT:?No free ports available on $(hostname):8888 to 8938}
 
 echo "Launching jupyter on $(hostname):$PORT"
 echo "Connect using 'ssh -L$PORT:localhost:$PORT $(hostname)'"
