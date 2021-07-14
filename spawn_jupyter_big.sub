@@ -1,11 +1,11 @@
 #!/bin/sh
 #SBATCH -J jupyter
 #SBATCH -p gpu
-#SBATCH --account=merlin-gpu
+#SBATCH --cluster=gmerlin6
 #SBATCH --time=2-00:00:00
-#SBATCH --gres=gpu:4
-#SBATCH --exclusive
-#SBATCH --mem=0
+#SBATCH --gpus=4
+#SBATCH --nodes=1
+#SBATCH --mem=100G
 #SBATCH -o jupyter-%j.out
 #SBATCH -e jupyter-%j.err
 
